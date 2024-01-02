@@ -132,7 +132,7 @@ jobs:
           emsdk activate ${{ matrix.emsdk_ver }}
 
           source $CONDA_EMSDK_DIR/emsdk_env.sh
-          micromamba create -f environment-wasm-host.yml --platform=emscripten-32
+          micromamba create -f environment-wasm-host.yml --platform=emscripten-wasm32
 
           mkdir build
           pushd build
@@ -146,7 +146,7 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release                        \
             -DCMAKE_PREFIX_PATH=$PREFIX                       \
             -DCMAKE_INSTALL_PREFIX=$PREFIX                    \
-            -DXEUS_RUBY_EMSCRIPTEN_WASM_BUILD=ON               \
+            -DXEUS_RUBY_EMSCRIPTEN_WASM_BUILD=ON              \
             -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ON            \
             ..
           make -j5
