@@ -1,0 +1,11 @@
+{
+  "display_name": "ruby 3.2.2 (xruby)",
+  "argv": [
+      "@XEUS_RUBY_KERNELSPEC_PATH@xruby",
+      "-f",
+      "{connection_file}"
+  ],
+  "language": "ruby",
+  "metadata": {"debugger": false
+  }
+}
