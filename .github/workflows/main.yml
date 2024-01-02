@@ -12,9 +12,9 @@ on:
 
 jobs:
   unix:
-    
+
     runs-on: ${{ matrix.os }}
-    
+
     strategy:
       fail-fast: false
       matrix:
@@ -57,9 +57,9 @@ jobs:
           pytest .  --reruns 5
 
   win:
-    
+
     runs-on: ${{ matrix.os }}
-    
+
     strategy:
       fail-fast: false
       matrix:
@@ -100,99 +100,6 @@ jobs:
           cd test
           pytest .  --reruns 5
 
-  emscripten_wasm_docker:
-    runs-on: ubuntu-20.04
-
-    strategy:
-      fail-fast: false
-      matrix:
-        container: ["emscripten/emsdk:2.0.34", "emscripten/emsdk:3.1.3", "emscripten/emsdk:latest"]
-
-    
-    container: ${{ matrix.container}}
-    
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Verify emscripten
-        run: emcc -v
-
-      - name: Install xtl
-        run: |
-          mkdir -p /opt/xtl/build
-          git clone https://github.com/xtensor-stack/xtl.git  /opt/xtl/src
-          cd /opt/xtl/src
-          git checkout 0.7.2
-          cd /opt/xtl/build
-          emcmake cmake ../src/ -DCMAKE_INSTALL_PREFIX=/custom_sysroot
-          emmake make -j2 install
-
-      - name: Install nlohmann-json
-        run: |
-          mkdir -p /opt/nlohmannjson/build
-          git clone https://github.com/nlohmann/json.git  /opt/nlohmannjson/src
-          cd  /opt/nlohmannjson/src
-          git checkout v3.9.0
-          cd /opt/nlohmannjson/build
-          emcmake cmake ../src/  -DJSON_BuildTests=OFF -DCMAKE_INSTALL_PREFIX=/custom_sysroot
-          emmake make -j2 install
-
-      - name: Install xeus
-        run: |
-          mkdir -p /opt/xeus/build
-          git clone https://github.com/jupyter-xeus/xeus.git  /opt/xeus/src
-          cd  /opt/xeus/src
-
-          cd /opt/xeus/build
-          emcmake cmake ../src \
-            -DXEUS_EMSCRIPTEN_WASM_BUILD=ON \
-            -DXEUS_BUILD_TESTS=ON \
-            -DCMAKE_INSTALL_PREFIX=/custom_sysroot\
-            -Dxtl_DIR=/custom_sysroot/share/cmake/xtl \
-            -Dnlohmann_json_DIR=/custom_sysroot/lib/cmake/nlohmann_json
-
-          emmake make -j2
-          emmake make -j2 install
-
-      - name: Install xeus-lite
-        run: |
-          mkdir -p /opt/xeus-lite/build
-          git clone https://github.com/jupyter-xeus/xeus-lite.git  /opt/xeus-lite/src
-          cd /opt/xeus-lite/build
-          emcmake cmake ../src \
-            -DXEUS_EMSCRIPTEN_WASM_BUILD=ON \
-            -DCMAKE_INSTALL_PREFIX=/custom_sysroot \
-            -Dxtl_DIR=custom_sysroot/share/cmake/xtl \
-            -Dnlohmann_json_DIR=/custom_sysroot/lib/cmake/nlohmann_json \
-            -Dxeus_DIR=/custom_sysroot/lib/cmake/xeus
-          emmake make -j2
-          emmake make -j2 install
-
-      - name: Configure cmake rendered project
-        shell: bash -l {0}
-        run: |
-          mkdir -p bld
-          cd bld
-          emcmake cmake .. \
-           -DXEUS_RUBY_EMSCRIPTEN_WASM_BUILD=ON \
-           -Dxtl_DIR=/custom_sysroot/share/cmake/xtl \
-           -Dnlohmann_json_DIR=/custom_sysroot/lib/cmake/nlohmann_json \
-           -Dxeus_DIR=/custom_sysroot/lib/cmake/xeus \
-           -Dxeus-lite_DIR=/custom_sysroot/lib/cmake/xeus-lite \
-           -DCMAKE_INSTALL_PREFIX=/custom_sysroot
-
-      - name: Build rendered project
-        shell: bash -l {0}
-        run: |
-          cd bld
-          emmake make -j2
-
-      - name: Install rendered project
-        shell: bash -l {0}
-        run: |
-          cd bld
-          make install
-
   emscripten_wasm:
 
     runs-on: ubuntu-latest
@@ -214,16 +121,16 @@ jobs:
       - name: Setup emsdk
         shell: bash -l {0}
         run: |
-          
+
           emsdk install ${{ matrix.emsdk_ver }}
-          
+
 
       - name: Build
         shell: bash -l {0}
         run: |
-          
+
           emsdk activate ${{ matrix.emsdk_ver }}
-          
+
           source $CONDA_EMSDK_DIR/emsdk_env.sh
           micromamba create -f environment-wasm-host.yml --platform=emscripten-32
 
@@ -243,5 +150,3 @@ jobs:
             -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ON            \
             ..
           make -j5
-
-  
