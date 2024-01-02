@@ -113,11 +113,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Get number of CPU cores
+        uses: SimenB/github-actions-cpu-cores@v2
+
       - name: Install micromamba
         uses: mamba-org/setup-micromamba@v1
         with:
-          environment-file: environment-wasm-build.yml
           environment-name: xeus-ruby-wasm-build
+          create-args: >-
+            cmake
+            emsdk==${{ matrix.emsdk_ver }}
+            empack
 
       - name: Setup emsdk
         shell: bash -l {0}
@@ -146,4 +152,4 @@ jobs:
             -DXEUS_RUBY_EMSCRIPTEN_WASM_BUILD=ON              \
             -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ON            \
             ..
-          make -j5
+          make -j${{ steps.cpu-cores.outputs.count }}
