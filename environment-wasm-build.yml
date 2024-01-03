@@ -1,4 +1,4 @@
-name: xeus-ruby
+name: xeus-ruby-wasm-build
 channels:
   - conda-forge
 dependencies:
