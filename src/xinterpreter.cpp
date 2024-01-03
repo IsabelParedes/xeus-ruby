@@ -1,9 +1,9 @@
 /***************************************************************************
-* Copyright (c) 2024, Isabel Paredes                                  
-*                                                                          
-* Distributed under the terms of the BSD 3-Clause License.                 
-*                                                                          
-* The full license is in the file LICENSE, distributed with this software. 
+* Copyright (c) 2024, Isabel Paredes
+*
+* Distributed under the terms of the BSD 3-Clause License.
+*
+* The full license is in the file LICENSE, distributed with this software.
 ****************************************************************************/
 
 #include <string>
@@ -22,7 +22,7 @@ namespace nl = nlohmann;
 
 namespace xeus_ruby
 {
- 
+
     interpreter::interpreter()
     {
         xeus::register_interpreter(this);
@@ -87,11 +87,11 @@ namespace xeus_ruby
         // i.e if the code starts with 'H', it could be the following completion
         if (code[0] == 'H')
         {
-       
+
             return xeus::create_complete_reply(
                 {
-                    std::string("Hello"), 
-                    std::string("Hey"), 
+                    std::string("Hello"),
+                    std::string("Hey"),
                     std::string("Howdy")
                 },          /*matches*/
                 5,          /*cursor_start*/
@@ -115,12 +115,12 @@ namespace xeus_ruby
                                                       int /*cursor_pos*/,
                                                       int /*detail_level*/)
     {
-        
-        return xeus::create_inspect_reply(true/*found*/, 
+
+        return xeus::create_inspect_reply(true/*found*/,
             {{std::string("text/plain"), std::string("hello!")}}, /*data*/
             {{std::string("text/plain"), std::string("hello!")}}  /*meta-data*/
         );
-         
+
     }
 
     void interpreter::shutdown_request_impl() {
@@ -141,7 +141,7 @@ namespace xeus_ruby
         const std::string  language_codemirror_mode = "";
         const std::string  language_nbconvert_exporter = "";
         const std::string  banner = "xruby";const bool         debugger = false;
-        
+
         const nl::json     help_links = nl::json::array();
 
 
