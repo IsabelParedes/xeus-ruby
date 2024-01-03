@@ -1,11 +1,10 @@
 /***************************************************************************
-* Copyright (c) 2024, Isabel Paredes                                  
-*                                                                          
-* Distributed under the terms of the BSD 3-Clause License.                 
-*                                                                          
-* The full license is in the file LICENSE, distributed with this software. 
+* Copyright (c) 2024, Isabel Paredes
+*
+* Distributed under the terms of the BSD 3-Clause License.
+*
+* The full license is in the file LICENSE, distributed with this software.
 ****************************************************************************/
-
 
 
 #include <cstdlib>
@@ -24,7 +23,6 @@
 #include "xeus/xkernel.hpp"
 #include "xeus/xkernel_configuration.hpp"
 #include "xeus-zmq/xserver_zmq.hpp"
-
 
 #include "xeus-ruby/xinterpreter.hpp"
 #include "xeus-ruby/xeus_ruby_config.hpp"

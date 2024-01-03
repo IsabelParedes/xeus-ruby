@@ -46,7 +46,6 @@ configure_file (
 option(XEUS_RUBY_BUILD_STATIC "Build xeus-ruby static library" ON)
 option(XEUS_RUBY_BUILD_SHARED "Split xruby build into executable and library" ON)
 option(XEUS_RUBY_BUILD_EXECUTABLE "Build the xruby executable" ON)
-
 option(XEUS_RUBY_USE_SHARED_XEUS "Link xruby  with the xeus shared library (instead of the static library)" ON)
 option(XEUS_RUBY_USE_SHARED_XEUS_RUBY "Link xruby  with the xeus shared library (instead of the static library)" ON)
 
@@ -54,12 +53,12 @@ option(XEUS_RUBY_USE_SHARED_XEUS_RUBY "Link xruby  with the xeus shared library 
 if(EMSCRIPTEN)
     add_compile_definitions(XEUS_RUBY_EMSCRIPTEN_WASM_BUILD)
     message("Build with emscripten")
-    SET(XEUS_RUBY_BUILD_STATIC ON)
-    SET(XEUS_RUBY_BUILD_SHARED OFF)
-    SET(XEUS_RUBY_BUILD_EXECUTABLE OFF)
-    SET(XEUS_RUBY_USE_SHARED_XEUS OFF)
-    SET(XEUS_RUBY_USE_SHARED_XEUS_RUBY OFF)
-    SET(XEUS_RUBY_BUILD_TESTS OFF)
+    set(XEUS_RUBY_BUILD_STATIC ON)
+    set(XEUS_RUBY_BUILD_SHARED OFF)
+    set(XEUS_RUBY_BUILD_EXECUTABLE OFF)
+    set(XEUS_RUBY_USE_SHARED_XEUS OFF)
+    set(XEUS_RUBY_USE_SHARED_XEUS_RUBY OFF)
+    set(XEUS_RUBY_BUILD_TESTS OFF)
 endif()
 
 
@@ -182,7 +181,6 @@ macro(xeus_ruby_set_kernel_options target_name)
         find_package(Threads)
         target_link_libraries(${target_name} PRIVATE ${CMAKE_THREAD_LIBS_INIT})
     endif()
-
 endmacro()
 
 # Common macro for shared and static library
@@ -267,9 +265,9 @@ endif()
 if(EMSCRIPTEN)
     include(WasmBuildOptions)
     find_package(xeus-lite REQUIRED)
-    add_executable(xruby src/main_emscripten_kernel.cpp )
+    add_executable(xruby src/main_emscripten_kernel.cpp)
     target_link_libraries(xruby PRIVATE xeus-ruby-static xeus-lite)
-    XEUS_RUBY_set_kernel_options(xruby)
+    xeus_ruby_set_kernel_options(xruby)
     xeus_wasm_compile_options(xruby)
     xeus_wasm_link_options(xruby "web,worker")
 endif()
