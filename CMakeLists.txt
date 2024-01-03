@@ -44,11 +44,11 @@ configure_file (
 # =============
 
 option(XEUS_RUBY_BUILD_STATIC "Build xeus-ruby static library" ON)
-OPTION(XEUS_RUBY_BUILD_SHARED "Split xruby build into executable and library" ON)
-OPTION(XEUS_RUBY_BUILD_EXECUTABLE "Build the xruby executable" ON)
+option(XEUS_RUBY_BUILD_SHARED "Split xruby build into executable and library" ON)
+option(XEUS_RUBY_BUILD_EXECUTABLE "Build the xruby executable" ON)
 
-OPTION(XEUS_RUBY_USE_SHARED_XEUS "Link xruby  with the xeus shared library (instead of the static library)" ON)
-OPTION(XEUS_RUBY_USE_SHARED_XEUS_RUBY "Link xruby  with the xeus shared library (instead of the static library)" ON)
+option(XEUS_RUBY_USE_SHARED_XEUS "Link xruby  with the xeus shared library (instead of the static library)" ON)
+option(XEUS_RUBY_USE_SHARED_XEUS_RUBY "Link xruby  with the xeus shared library (instead of the static library)" ON)
 
 
 if(EMSCRIPTEN)
@@ -89,7 +89,6 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU"
     if(NOT EMSCRIPTEN)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused-parameter -Wextra -Wreorder")
     endif()
-    
 
     CHECK_CXX_COMPILER_FLAG("-std=c++17" HAS_CPP_17_FLAG)
     if (HAS_CPP_17_FLAG)
@@ -183,7 +182,7 @@ macro(xeus_ruby_set_kernel_options target_name)
         find_package(Threads)
         target_link_libraries(${target_name} PRIVATE ${CMAKE_THREAD_LIBS_INIT})
     endif()
-    
+
 endmacro()
 
 # Common macro for shared and static library
@@ -229,7 +228,7 @@ macro(xeus_ruby_create_target target_name linkage output_name)
         find_package(Threads) # TODO: add Threads as a dependence of xeus-static?
         target_link_libraries(${target_name} PRIVATE ${CMAKE_THREAD_LIBS_INIT})
     endif()
-    
+
 endmacro()
 
 # xeus-ruby
