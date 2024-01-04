@@ -1,9 +1,9 @@
 #############################################################################
-#Copyright (c) 2024,                                          
-#                                                                         
-#Distributed under the terms of the BSD 3-Clause License.                 
-#                                                                         
-#The full license is in the file LICENSE, distributed with this software. 
+# Copyright (c) 2024, Isabel Paredes
+#
+# Distributed under the terms of the BSD 3-Clause License.
+#
+# The full license is in the file LICENSE, distributed with this software.
 #############################################################################
 
 cmake_minimum_required(VERSION 3.4.3)
@@ -267,6 +267,7 @@ if(EMSCRIPTEN)
     find_package(xeus-lite REQUIRED)
     add_executable(xruby src/main_emscripten_kernel.cpp)
     target_link_libraries(xruby PRIVATE xeus-lite)
+    target_compile_features(xruby PRIVATE cxx_std_17)
     xeus_ruby_set_kernel_options(xruby)
     xeus_wasm_compile_options(xruby)
     xeus_wasm_link_options(xruby "web,worker")

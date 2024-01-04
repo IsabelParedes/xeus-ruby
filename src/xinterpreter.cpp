@@ -28,13 +28,17 @@ namespace xeus_ruby
         xeus::register_interpreter(this);
     }
 
-    nl::json interpreter::execute_request_impl(int execution_counter, // Typically the cell number
-                                                      const  std::string & code, // Code to execute
-                                                      bool /*silent*/,
-                                                      bool /*store_history*/,
-                                                      nl::json /*user_expressions*/,
-                                                      bool /*allow_stdin*/)
+    nl::json interpreter::execute_request_impl(
+        int execution_counter, // Typically the cell number
+        const  std::string & code, // Code to execute
+        bool /*silent*/,
+        bool /*store_history*/,
+        nl::json /*user_expressions*/,
+        bool /*allow_stdin*/
+        )
     {
+        // REMOVE
+        std::cout << "CODE: " << code << '\n';
         // Use this method for publishing the execution result to the client,
         // this method takes the ``execution_counter`` as first argument,
         // the data to publish (mime type data) as second argument and metadata
@@ -73,6 +77,8 @@ namespace xeus_ruby
 
     nl::json interpreter::is_complete_request_impl(const std::string& code)
     {
+        // REMOVE
+        std::cout << "CODE: " << code << '\n';
         // Insert code here to validate the ``code``
         // and use `create_is_complete_reply` with the corresponding status
         // "unknown", "incomplete", "invalid", "complete"
@@ -82,6 +88,8 @@ namespace xeus_ruby
     nl::json interpreter::complete_request_impl(const std::string&  code,
                                                      int cursor_pos)
     {
+        // REMOVE
+        std::cout << "CODE: " << code << '\n';
         // Should be replaced with code performing the completion
         // and use the returned `matches` to `create_complete_reply`
         // i.e if the code starts with 'H', it could be the following completion
@@ -140,10 +148,9 @@ namespace xeus_ruby
         const std::string  language_pygments_lexer = "";
         const std::string  language_codemirror_mode = "";
         const std::string  language_nbconvert_exporter = "";
-        const std::string  banner = "xruby";const bool         debugger = false;
-
+        const std::string  banner = "xruby";
+        const bool         debugger = false;
         const nl::json     help_links = nl::json::array();
-
 
         return xeus::create_info_reply(
             protocol_version,
