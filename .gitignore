@@ -41,5 +41,6 @@ share/jupyter/kernels/xruby/kernel.json
 # Build directory
 build/
 
-# Test files
+# Custom files
 tst*
+.vscode

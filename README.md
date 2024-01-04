@@ -36,18 +36,21 @@ mamba install`xeus-ruby` notebook -c conda-forge
 
 ### Installing from source
 
-Or you can install it from the sources, you will first need to install dependencies
+Or you can install it from source, you will first need to install dependencies
 
 ```bash
 mamba install cmake cxx-compiler xeus-zmq nlohmann_json cppzmq xtl jupyterlab -c conda-forge
 ```
 
 Then you can compile the sources (replace `$CONDA_PREFIX` with a custom installation
-prefix if need be)
+prefix if needed)
 
 ```bash
 mkdir build && cd build
-cmake .. -D CMAKE_PREFIX_PATH=$CONDA_PREFIX -D CMAKE_INSTALL_PREFIX=$CONDA_PREFIX -D CMAKE_INSTALL_LIBDIR=lib
+cmake .. \
+    -D CMAKE_PREFIX_PATH=$CONDA_PREFIX \
+    -D CMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+    -D CMAKE_INSTALL_LIBDIR=lib
 make && make install
 ```
 
@@ -60,11 +63,11 @@ To try out xeus-ruby interactively in your web browser, just click on the binder
 
 
 
-## Documentation
+<!-- ## Documentation
 
 To get started with using `xeus-ruby`, check out the full documentation
 
-http://xeus-ruby.readthedocs.io
+http://xeus-ruby.readthedocs.io -->
 
 
 ## Dependencies
