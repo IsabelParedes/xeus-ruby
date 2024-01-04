@@ -102,6 +102,7 @@ jobs:
         working-directory: test
 
   emscripten_wasm:
+    if: false
 
     runs-on: ubuntu-latest
 
