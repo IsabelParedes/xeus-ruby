@@ -1,0 +1,7 @@
+name: xeus-ruby-docs
+
+channels:
+  - conda-forge
+
+dependencies:
+  - sphinx_rtd_theme
