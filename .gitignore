@@ -33,7 +33,7 @@
 *.wasm
 
 # Jupyter
-.ipynb_checkpoints/
+*.ipynb_checkpoints/
 
 # Generated kernelspec
 share/jupyter/kernels/xruby/kernel.json
@@ -41,6 +41,10 @@ share/jupyter/kernels/xruby/kernel.json
 # Build directory
 build/
 
+# Documentation
+docs/_build
+
 # Custom files
 tst*
 .vscode
+archive
