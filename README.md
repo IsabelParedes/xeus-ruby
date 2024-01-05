@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/IsabelParedes/xeus-ruby/actions/workflows/main.yml/badge.svg)](https://github.com/IsabelParedes/xeus-ruby/actions/workflows/main.yml)
 
-[![Documentation Status](http://readthedocs.org/projects/xeus-ruby/badge/?version=latest)](https://xeus-rubyreadthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](http://readthedocs.org/projects/xeus-ruby/badge/?version=latest)](https://xeus-ruby.readthedocs.io/en/latest/?badge=latest)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/IsabelParedes/xeus-ruby/main?urlpath=/lab/tree/notebooks/xeus-ruby.ipynb)
 
 `xeus-ruby` is a Jupyter kernel for ruby based on the native implementation of the
