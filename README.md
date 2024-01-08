@@ -1,4 +1,4 @@
-# ![xeus-ruby](docs/source/xeus-logo.svg)
+# ![xeus-ruby](docs/_images/xeus-logo.svg)
 
 [![Build Status](https://github.com/IsabelParedes/xeus-ruby/actions/workflows/main.yml/badge.svg)](https://github.com/IsabelParedes/xeus-ruby/actions/workflows/main.yml)
 
