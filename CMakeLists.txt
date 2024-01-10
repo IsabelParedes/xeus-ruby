@@ -49,7 +49,6 @@ option(XEUS_RUBY_BUILD_EXECUTABLE "Build the xruby executable" ON)
 option(XEUS_RUBY_USE_SHARED_XEUS "Link xruby  with the xeus shared library (instead of the static library)" ON)
 option(XEUS_RUBY_USE_SHARED_XEUS_RUBY "Link xruby  with the xeus shared library (instead of the static library)" ON)
 
-
 if(EMSCRIPTEN)
     add_compile_definitions(XEUS_RUBY_EMSCRIPTEN_WASM_BUILD)
     message("Build with emscripten")
@@ -60,7 +59,6 @@ if(EMSCRIPTEN)
     set(XEUS_RUBY_USE_SHARED_XEUS_RUBY OFF)
     set(XEUS_RUBY_BUILD_TESTS OFF)
 endif()
-
 
 # Dependencies
 # ============
@@ -77,6 +75,7 @@ endif ()
 
 # Flags
 # =====
+
 include(CheckCXXCompilerFlag)
 
 if (MSVC)
@@ -102,7 +101,6 @@ if(EMSCRIPTEN)
     set(EMSCRIPTEN_FEATURES "${EMSCRIPTEN_FEATURES} -s \"EXTRA_EXPORTED_RUNTIME_METHODS=[ENV']\"")
 endif()
 
-
 # Source files
 # ============
 
@@ -118,7 +116,6 @@ set(XEUS_RUBY_SRC
 set(XEUS_RUBY_MAIN_SRC
     src/main.cpp
 )
-
 
 # Targets and link - Macros
 # =========================
@@ -276,9 +273,9 @@ if(EMSCRIPTEN)
     xeus_wasm_link_options(xruby "web,worker")
 endif()
 
-
 # Installation
 # ============
+
 include(CMakePackageConfigHelpers)
 
 set(XEUS_RUBY_CMAKECONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}" CACHE STRING "install path for xeus-rubyConfig.cmake")
@@ -358,4 +355,3 @@ if(EMSCRIPTEN)
             "$<TARGET_FILE_DIR:xruby>/xruby.wasm"
             DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif ()
-
