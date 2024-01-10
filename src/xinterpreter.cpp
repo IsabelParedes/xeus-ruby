@@ -10,6 +10,8 @@
 #include <vector>
 #include <iostream>
 
+#include <ruby.h>
+
 #include "nlohmann/json.hpp"
 
 #include "xeus/xinput.hpp"
