@@ -6,7 +6,7 @@
 # The full license is in the file LICENSE, distributed with this software.
 #############################################################################
 
-cmake_minimum_required(VERSION 3.4.3)
+cmake_minimum_required(VERSION 3.5)
 project(xeus-ruby)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
@@ -65,6 +65,7 @@ endif()
 
 set(xtl_REQUIRED_VERSION 0.7.0)
 set(xeus_REQUIRED_VERSION 3.0.5)
+set(ruby_REQUIRED_VERSION 3.2.2)
 
 if (NOT TARGET xtl)
     find_package(xtl ${xtl_REQUIRED_VERSION} REQUIRED)
@@ -72,6 +73,8 @@ endif ()
 if (NOT TARGET xeus AND NOT TARGET xeus-static)
     find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
 endif ()
+
+find_package(Ruby ${ruby_REQUIRED_VERSION} REQUIRED)
 
 # Flags
 # =====
@@ -165,6 +168,7 @@ endmacro()
 
 # Common macro kernels (xruby)
 macro(xeus_ruby_set_kernel_options target_name)
+    target_link_libraries(${target_name} ${RUBY_LIBRARIES})
     if (XEUS_RUBY_USE_SHARED_XEUS_RUBY)
         target_link_libraries(${target_name} PRIVATE xeus-ruby)
         if(CMAKE_DL_LIBS)
@@ -204,6 +208,7 @@ macro(xeus_ruby_create_target target_name linkage output_name)
 
     target_include_directories(${target_name}
                                PUBLIC
+                               ${RUBY_INCLUDE_DIRS}
                                $<BUILD_INTERFACE:${XEUS_RUBY_INCLUDE_DIR}>
                                $<INSTALL_INTERFACE:include>)
 
