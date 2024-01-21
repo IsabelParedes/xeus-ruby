@@ -39,7 +39,7 @@
 share/jupyter/kernels/xruby/kernel.json
 
 # Build directory
-build/
+build*
 
 # Documentation
 docs/_build
