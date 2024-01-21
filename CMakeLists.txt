@@ -58,6 +58,7 @@ if(EMSCRIPTEN)
     set(XEUS_RUBY_USE_SHARED_XEUS OFF)
     set(XEUS_RUBY_USE_SHARED_XEUS_RUBY OFF)
     set(XEUS_RUBY_BUILD_TESTS OFF)
+
 endif()
 
 # Dependencies
@@ -65,7 +66,8 @@ endif()
 
 set(xtl_REQUIRED_VERSION 0.7.0)
 set(xeus_REQUIRED_VERSION 3.0.5)
-set(ruby_REQUIRED_VERSION 3.2.2)
+set(ruby_REQUIRED_VERSION 3.0)
+set(rice_REQUIRED_VERSION 4.0)
 
 if (NOT TARGET xtl)
     find_package(xtl ${xtl_REQUIRED_VERSION} REQUIRED)
@@ -75,6 +77,7 @@ if (NOT TARGET xeus AND NOT TARGET xeus-static)
 endif ()
 
 find_package(Ruby ${ruby_REQUIRED_VERSION} REQUIRED)
+find_package(Rice ${rice_REQUIRED_VERSION} REQUIRED)
 
 # Flags
 # =====

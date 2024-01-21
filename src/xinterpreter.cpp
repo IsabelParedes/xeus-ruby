@@ -10,7 +10,7 @@
 #include <vector>
 #include <iostream>
 
-#include <ruby.h>
+#include <rice/rice.hpp>
 
 #include "nlohmann/json.hpp"
 
