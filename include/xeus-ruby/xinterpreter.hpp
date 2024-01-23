@@ -19,6 +19,8 @@
 #include <memory>
 
 #include <ruby.h>
+#undef snprintf
+#undef vsnprintf
 // #include <rice/rice.hpp>
 // #include <rice/stl.hpp>
 
