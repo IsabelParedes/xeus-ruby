@@ -10,7 +10,9 @@
 #include <vector>
 #include <iostream>
 
+#include <ruby.h>
 #include <rice/rice.hpp>
+#include <rice/stl.hpp>
 
 #include "nlohmann/json.hpp"
 
@@ -28,6 +30,13 @@ namespace xeus_ruby
     interpreter::interpreter()
     {
         xeus::register_interpreter(this);
+        int argc{ 0 };
+        char* argv{ nullptr };
+        char** pArgv{ &argv };
+
+        ruby_sysinit(&argc, &pArgv);
+        ruby_init();
+        ruby_init_loadpath();
     }
 
     nl::json interpreter::execute_request_impl(
@@ -39,15 +48,21 @@ namespace xeus_ruby
         bool /*allow_stdin*/
         )
     {
-        // REMOVE
-        std::cout << "CODE: " << code << '\n';
         // Use this method for publishing the execution result to the client,
         // this method takes the ``execution_counter`` as first argument,
         // the data to publish (mime type data) as second argument and metadata
         // as third argument.
         // Replace "Hello World !!" by what you want to be displayed under the execution cell
         nl::json pub_data;
-        pub_data["text/plain"] = "Hello World !!";
+        // pub_data["text/plain"] = "Hello World !!";
+        pub_data["text/plain"] = "Helloooooo";
+
+        // ruby_init();
+        // Rice::Module mod = Rice::define_module("XeusRubyModule");
+        // mod.module_eval(code.c_str());
+
+        // rb_eval_string(code.c_str());
+        // Rice::Object exc = Rice::detail::protect(rb_eval_string, code.c_str());
 
         // If silent is set to true, do not publish anything!
         // Otherwise:
@@ -75,6 +90,13 @@ namespace xeus_ruby
         // after the custom_interpreter creation and before executing any request.
         // This is optional, but can be useful;
         // you can for example initialize an engine here or redirect output.
+        // int argc{ 0 };
+        // char* argv{ nullptr };
+        // char** pArgv{ &argv };
+
+        // ruby_sysinit(&argc, &pArgv);
+        // ruby_init();
+        // ruby_init_loadpath();
     }
 
     nl::json interpreter::is_complete_request_impl(const std::string& code)
