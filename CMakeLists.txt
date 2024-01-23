@@ -171,7 +171,6 @@ endmacro()
 
 # Common macro kernels (xruby)
 macro(xeus_ruby_set_kernel_options target_name)
-    target_link_libraries(${target_name} PUBLIC ${Ruby_LIBRARIES})
     if (XEUS_RUBY_USE_SHARED_XEUS_RUBY)
         target_link_libraries(${target_name} PRIVATE xeus-ruby)
         if(CMAKE_DL_LIBS)
@@ -197,6 +196,8 @@ macro(xeus_ruby_create_target target_name linkage output_name)
 
     add_library(${target_name} ${linkage_upper} ${XEUS_RUBY_SRC} ${XEUS_RUBY_HEADERS})
     xeus_ruby_set_common_options(${target_name})
+
+    target_link_libraries(${target_name} PUBLIC ${Ruby_LIBRARIES})
 
     set_target_properties(${target_name} PROPERTIES
                           PUBLIC_HEADER "${XEUS_RUBY_HEADERS}"
