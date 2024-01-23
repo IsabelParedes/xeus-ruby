@@ -66,7 +66,7 @@ endif()
 
 set(xtl_REQUIRED_VERSION 0.7.0)
 set(xeus_REQUIRED_VERSION 3.0.5)
-set(ruby_REQUIRED_VERSION 3.0)
+set(Ruby_REQUIRED_VERSION 3.0)
 # set(rice_REQUIRED_VERSION 4.0)
 
 if (NOT TARGET xtl)
@@ -76,7 +76,7 @@ if (NOT TARGET xeus AND NOT TARGET xeus-static)
     find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
 endif ()
 
-find_package(Ruby ${ruby_REQUIRED_VERSION} REQUIRED)
+find_package(Ruby ${Ruby_REQUIRED_VERSION} REQUIRED)
 # find_package(Rice ${rice_REQUIRED_VERSION} REQUIRED)
 
 # Flags
@@ -171,7 +171,7 @@ endmacro()
 
 # Common macro kernels (xruby)
 macro(xeus_ruby_set_kernel_options target_name)
-    target_link_libraries(${target_name} ${RUBY_LIBRARIES})
+    target_link_libraries(${target_name} PUBLIC ${Ruby_LIBRARIES})
     if (XEUS_RUBY_USE_SHARED_XEUS_RUBY)
         target_link_libraries(${target_name} PRIVATE xeus-ruby)
         if(CMAKE_DL_LIBS)
@@ -211,7 +211,7 @@ macro(xeus_ruby_create_target target_name linkage output_name)
 
     target_include_directories(${target_name}
                                PUBLIC
-                               ${RUBY_INCLUDE_DIRS}
+                               ${Ruby_INCLUDE_DIRS}
                                $<BUILD_INTERFACE:${XEUS_RUBY_INCLUDE_DIR}>
                                $<INSTALL_INTERFACE:include>)
 
