@@ -41,6 +41,7 @@ namespace xeus_ruby
         ruby_init_loadpath();
     }
 
+
     nl::json interpreter::execute_request_impl(
         int execution_counter, // Typically the cell number
         const  std::string & code, // Code to execute
@@ -56,14 +57,36 @@ namespace xeus_ruby
         // as third argument.
         // Replace "Hello World !!" by what you want to be displayed under the execution cell
         nl::json pub_data;
-        // pub_data["text/plain"] = "Hello World !!";
-        pub_data["text/plain"] = "Helloooooo";
+        std::vector<std::string> trace_back{};
+        // pub_data["text/plain"] = "Helloooooo";
 
-        // ruby_init();
         // Rice::Module mod = Rice::define_module("XeusRubyModule");
         // mod.module_eval(code.c_str());
+        int state;
+        VALUE rb_result = rb_eval_string_protect(code.c_str(), &state);
 
-        // rb_eval_string(code.c_str());
+        if (state)
+        {
+            // Handle exceptions
+            publish_stream("stderr", "Something bad happened" + std::to_string(state));
+            return  xeus::create_error_reply("error value", "Error name", trace_back);
+        }
+
+        switch (TYPE(rb_result))
+        {
+            case T_NIL:
+                pub_data["text/plain"] = "nil";
+                break;
+            case T_FIXNUM:
+                pub_data["text/plain"] = FIX2LONG(rb_result);
+                break;
+            case T_STRING:
+                pub_data["text/plain"] = StringValueCStr(rb_result);
+                break;
+            default:
+                pub_data["text/plain"] = "None of the above";
+                break;
+        }
         // Rice::Object exc = Rice::detail::protect(rb_eval_string, code.c_str());
 
         // If silent is set to true, do not publish anything!
@@ -74,16 +97,15 @@ namespace xeus_ruby
         // You can also use this method for publishing errors to the client, if the code
         // failed to execute
         // publish_execution_error(error_name, error_value, error_traceback);
-        publish_execution_error("TypeError", "123", {"!@#$", "*(*"});
+        // publish_execution_error("TypeError", "123", {"!@#$", "*(*"});
 
         // Use publish_stream to publish a stream message or error:
-        publish_stream("stdout", "I am publishing a message");
-        publish_stream("stderr", "Error!");
+        // publish_stream("stdout", "I am publishing a message");
+        // publish_stream("stderr", "Error!");
 
         // Use Helpers that create replies to the server to be returned
-        return xeus::create_successful_reply(/*payload, user_expressions*/);
-        // Or in case of error:
-        //return xeus::create_error_reply(evalue, ename, trace_back);
+        // ( payload, user_expressions )
+        return xeus::create_successful_reply( nl::json::array(), nl::json::object());
     }
 
     void interpreter::configure_impl()
@@ -92,30 +114,19 @@ namespace xeus_ruby
         // after the custom_interpreter creation and before executing any request.
         // This is optional, but can be useful;
         // you can for example initialize an engine here or redirect output.
-        // int argc{ 0 };
-        // char* argv{ nullptr };
-        // char** pArgv{ &argv };
-
-        // ruby_sysinit(&argc, &pArgv);
-        // ruby_init();
-        // ruby_init_loadpath();
     }
 
     nl::json interpreter::is_complete_request_impl(const std::string& code)
     {
-        // REMOVE
-        std::cout << "CODE: " << code << '\n';
         // Insert code here to validate the ``code``
         // and use `create_is_complete_reply` with the corresponding status
         // "unknown", "incomplete", "invalid", "complete"
         return xeus::create_is_complete_reply("complete"/*status*/, "   "/*indent*/);
     }
 
-    nl::json interpreter::complete_request_impl(const std::string&  code,
+    nl::json interpreter::complete_request_impl(const std::string& code,
                                                      int cursor_pos)
     {
-        // REMOVE
-        std::cout << "CODE: " << code << '\n';
         // Should be replaced with code performing the completion
         // and use the returned `matches` to `create_complete_reply`
         // i.e if the code starts with 'H', it could be the following completion
@@ -158,6 +169,7 @@ namespace xeus_ruby
     }
 
     void interpreter::shutdown_request_impl() {
+        ruby_finalize();
         std::cout << "Bye!!" << std::endl;
     }
 
