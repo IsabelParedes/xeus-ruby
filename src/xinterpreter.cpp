@@ -50,6 +50,25 @@ namespace xeus_ruby
         ruby_init_loadpath();
 
         m_rice_module = Rice::define_module("rice_module");
+
+        // Testing output capture
+        // std::string ruby_code =
+        //     "class CaptureOutput < IO"
+        //     "   def initialize"
+        //     "       super()"
+        //     "   end"
+        //     "end"
+        //     ""
+        //     "dout, serr, sout = $defout, $stderr, $stdout"
+        //     "buf = CaptureOutput.new"
+        //     "begin"
+        //     "   $defout = buf"
+        //     "   $stderr = buf"
+        //     "   $stdout = buf"
+        //     "   yield"
+        //     "ensure"
+        //     "   $defout, $stderr, $stdout = dout, serr, sout"
+        //     "end";
     }
 
     nl::json interpreter::execute_request_impl(
@@ -78,12 +97,30 @@ namespace xeus_ruby
         // mod.module_eval(code.c_str());
         // Rice::Object riceult = m_rice_module.module_eval(code.c_str());
         // std::cout << "RICESULT " << rb_obj_as_string(riceult) << '\n';
+        // int state;
+        // char redirect_code[] =
+        //     "$stdout = StringIO.new"
+        //     "yield";
+        // rb_eval_string_protect(redirect_code, &state);
+        // if (state)
+        // {
+        //     std::cout << "SOMETHING BAD\n";
+        // }
+        // TODO: clean this up
+        std::string wrapped_code = "require 'stringio'\n";
+        wrapped_code.append("$stdout = StringIO.new\n");
+        wrapped_code.append(code);
+        wrapped_code.append("\n$stdout.string\n");
 
         try
         {
-            Rice::Object r_result = Rice::detail::protect(rb_eval_string, code.c_str());
+            Rice::Object r_result = Rice::detail::protect(rb_eval_string, wrapped_code.c_str());
             // TODO: this only gets the last result, need to redirect output
             auto r_string = rb_obj_as_string(r_result);
+
+            // Rice::Object string_output = Rice::detail::protect(rb_eval_string, "$stdout.string");
+            // auto string_output_stringy = rb_obj_as_string(string_output);
+
             pub_data["text/plain"] = StringValueCStr(r_string);
         }
         catch (const Rice::Exception& ex)
