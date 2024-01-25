@@ -79,19 +79,32 @@ namespace xeus_ruby
         // Rice::Object riceult = m_rice_module.module_eval(code.c_str());
         // std::cout << "RICESULT " << rb_obj_as_string(riceult) << '\n';
 
-        int state;
-
-        VALUE ruby_result = rb_eval_string_protect(code.c_str(), &state);
-        auto ruby_string = rb_obj_as_string(ruby_result);
-
-        pub_data["text/plain"] = StringValueCStr(ruby_string);
-
-        if (state)
+        try
         {
-            // Handle exceptions
-            publish_stream("stderr", "Something bad happened " + std::to_string(state));
-            return  xeus::create_error_reply("error value", "Error name", trace_back);
+            Rice::Object r_result = Rice::detail::protect(rb_eval_string, code.c_str());
+            // TODO: this only gets the last result, need to redirect output
+            auto r_string = rb_obj_as_string(r_result);
+            pub_data["text/plain"] = StringValueCStr(r_string);
         }
+        catch (const Rice::Exception& ex)
+        {
+            publish_stream("stderr", ex.what());
+            // TODO: get trace_back
+            return xeus::create_error_reply(ex.what(), "Error", trace_back);
+        }
+        // int state;
+
+        // VALUE ruby_result = rb_eval_string_protect(code.c_str(), &state);
+        // auto ruby_string = rb_obj_as_string(ruby_result);
+
+        // pub_data["text/plain"] = StringValueCStr(ruby_string);
+
+        // if (state)
+        // {
+        //     // Handle exceptions
+        //     publish_stream("stderr", "Something bad happened " + std::to_string(state));
+        //     return  xeus::create_error_reply("error value", "Error name", trace_back);
+        // }
 
         // Restore stream redirect
         // std::cout.rdbuf( oldCoutStreamBuf );

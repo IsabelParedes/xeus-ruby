@@ -19,10 +19,10 @@
 #include <memory>
 
 #include <ruby.h>
-#undef snprintf
-#undef vsnprintf
-// #include <rice/rice.hpp>
-// #include <rice/stl.hpp>
+// #undef snprintf
+// #undef vsnprintf
+#include <rice/rice.hpp>
+#include <rice/stl.hpp>
 
 #include "nlohmann/json.hpp"
 
@@ -63,6 +63,9 @@ namespace xeus_ruby
         nl::json kernel_info_request_impl() override;
 
         void shutdown_request_impl() override;
+
+    private:
+        Rice::Module m_rice_module{};
 
     };
 }
