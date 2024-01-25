@@ -67,7 +67,7 @@ endif()
 set(xtl_REQUIRED_VERSION 0.7.0)
 set(xeus_REQUIRED_VERSION 3.0.5)
 set(Ruby_REQUIRED_VERSION 3.0)
-# set(rice_REQUIRED_VERSION 4.0)
+set(rice_REQUIRED_VERSION 4.0)
 
 if (NOT TARGET xtl)
     find_package(xtl ${xtl_REQUIRED_VERSION} REQUIRED)
@@ -77,7 +77,7 @@ if (NOT TARGET xeus AND NOT TARGET xeus-static)
 endif ()
 
 find_package(Ruby ${Ruby_REQUIRED_VERSION} REQUIRED)
-# find_package(Rice ${rice_REQUIRED_VERSION} REQUIRED)
+find_package(Rice ${rice_REQUIRED_VERSION} REQUIRED)
 
 # Flags
 # =====
