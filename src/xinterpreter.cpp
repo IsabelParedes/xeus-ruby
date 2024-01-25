@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <streambuf>
+#include <sstream>
 
 #include <ruby.h>
 #undef snprintf
@@ -32,19 +34,27 @@ namespace xeus_ruby
     interpreter::interpreter()
     {
         xeus::register_interpreter(this);
-        int argc{ 0 };
-        char* argv{ nullptr };
-        char** pArgv{ &argv };
+        // int argc{ 0 };
+        // char* argv{ nullptr };
+        // char** pArgv{ &argv };
 
-        ruby_sysinit(&argc, &pArgv);
+        // ruby_sysinit(&argc, &pArgv);
+        // Construct VM
         ruby_init();
-        ruby_init_loadpath();
-    }
+        // ruby_init_loadpath();
 
+        // For error messages???
+        ruby_script("ruby_script");
+
+        // To be able to load gems with require
+        ruby_init_loadpath();
+
+        m_rice_module = Rice::define_module("rice_module");
+    }
 
     nl::json interpreter::execute_request_impl(
         int execution_counter, // Typically the cell number
-        const  std::string & code, // Code to execute
+        const std::string& code, // Code to execute
         bool /*silent*/,
         bool /*store_history*/,
         nl::json /*user_expressions*/,
@@ -55,38 +65,52 @@ namespace xeus_ruby
         // this method takes the ``execution_counter`` as first argument,
         // the data to publish (mime type data) as second argument and metadata
         // as third argument.
-        // Replace "Hello World !!" by what you want to be displayed under the execution cell
-        nl::json pub_data;
+        nl::json pub_data{};
         std::vector<std::string> trace_back{};
-        // pub_data["text/plain"] = "Helloooooo";
+
+        // Redirect output stream
+        // std::streambuf* strCout = std::cout.rdbuf();
+        // std::ostringstream strCout;
+        // std::cout.rdbuf( strCout.rdbuf() );
+
 
         // Rice::Module mod = Rice::define_module("XeusRubyModule");
         // mod.module_eval(code.c_str());
+        // Rice::Object riceult = m_rice_module.module_eval(code.c_str());
+        // std::cout << "RICESULT " << rb_obj_as_string(riceult) << '\n';
+
         int state;
-        VALUE rb_result = rb_eval_string_protect(code.c_str(), &state);
+
+        VALUE ruby_result = rb_eval_string_protect(code.c_str(), &state);
+        auto ruby_string = rb_obj_as_string(ruby_result);
+
+        pub_data["text/plain"] = StringValueCStr(ruby_string);
 
         if (state)
         {
             // Handle exceptions
-            publish_stream("stderr", "Something bad happened" + std::to_string(state));
+            publish_stream("stderr", "Something bad happened " + std::to_string(state));
             return  xeus::create_error_reply("error value", "Error name", trace_back);
         }
 
-        switch (TYPE(rb_result))
-        {
-            case T_NIL:
-                pub_data["text/plain"] = "nil";
-                break;
-            case T_FIXNUM:
-                pub_data["text/plain"] = FIX2LONG(rb_result);
-                break;
-            case T_STRING:
-                pub_data["text/plain"] = StringValueCStr(rb_result);
-                break;
-            default:
-                pub_data["text/plain"] = "None of the above";
-                break;
-        }
+        // Restore stream redirect
+        // std::cout.rdbuf( oldCoutStreamBuf );
+
+        // switch (TYPE(ruby_result))
+        // {
+        //     case T_NIL:
+        //         pub_data["text/plain"] = "nil";
+        //         break;
+        //     case T_FIXNUM:
+        //         pub_data["text/plain"] = FIX2LONG(ruby_result);
+        //         break;
+        //     case T_STRING:
+        //         pub_data["text/plain"] = StringValueCStr(ruby_result);
+        //         break;
+        //     default:
+        //         pub_data["text/plain"] = "None of the above";
+        //         break;
+        // }
         // Rice::Object exc = Rice::detail::protect(rb_eval_string, code.c_str());
 
         // If silent is set to true, do not publish anything!
@@ -105,7 +129,7 @@ namespace xeus_ruby
 
         // Use Helpers that create replies to the server to be returned
         // ( payload, user_expressions )
-        return xeus::create_successful_reply( nl::json::array(), nl::json::object());
+        return xeus::create_successful_reply(nl::json::array(), nl::json::object());
     }
 
     void interpreter::configure_impl()
@@ -169,8 +193,13 @@ namespace xeus_ruby
     }
 
     void interpreter::shutdown_request_impl() {
-        ruby_finalize();
+        // ruby_finalize();
         std::cout << "Bye!!" << std::endl;
+        VALUE val = ruby_cleanup(0);
+        if (val)
+        {
+            // Handle exceptions here
+        }
     }
 
     nl::json interpreter::kernel_info_request_impl()
