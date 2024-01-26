@@ -64,9 +64,6 @@ namespace xeus_ruby
 
         void shutdown_request_impl() override;
 
-    private:
-        Rice::Module m_rice_module{};
-
     };
 }
 

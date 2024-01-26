@@ -40,13 +40,8 @@ namespace xeus_ruby
         // Construct VM
         ruby_init();
 
-        // For error messages??? Optional?
-        // ruby_script("ruby_script");
-
         // To be able to load gems with require
         ruby_init_loadpath();
-
-        m_rice_module = Rice::define_module("rice_module");
 
         // Define the output capture in Ruby
         Rice::Class rb_cOutputCapture =
@@ -78,23 +73,19 @@ namespace xeus_ruby
     nl::json interpreter::execute_request_impl(
         int execution_counter, // Typically the cell number
         const std::string& code, // Code to execute
-        bool /*silent*/,
+        bool silent,
         bool /*store_history*/,
         nl::json /*user_expressions*/,
         bool /*allow_stdin*/
         )
     {
-        // Use this method for publishing the execution result to the client,
-        // this method takes the ``execution_counter`` as first argument,
-        // the data to publish (mime type data) as second argument and metadata
-        // as third argument.
+        // This method publishes the execution result to the client
         nl::json pub_data{};
         std::vector<std::string> trace_back{};
 
         try
         {
             Rice::Object r_result = Rice::detail::protect(rb_eval_string, code.c_str());
-            // TODO: this only gets the last result, need to redirect output
             if (r_result.value() == Qnil)
             {
                 pub_data["text/plain"] = "nil";
@@ -107,28 +98,15 @@ namespace xeus_ruby
         }
         catch (const Rice::Exception& ex)
         {
+            // publish_execution_error(error_name, error_value, error_traceback);
             publish_stream("stderr", ex.what());
             // TODO: get trace_back
             return xeus::create_error_reply(ex.what(), "Error", trace_back);
         }
 
-        publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
+        if (!silent)
+            publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
 
-        // If silent is set to true, do not publish anything!
-        // Otherwise:
-        // Publish the execution result
-        // publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
-
-        // You can also use this method for publishing errors to the client, if the code
-        // failed to execute
-        // publish_execution_error(error_name, error_value, error_traceback);
-        // publish_execution_error("TypeError", "123", {"!@#$", "*(*"});
-
-        // Use publish_stream to publish a stream message or error:
-        // publish_stream("stdout", "I am publishing a message");
-        // publish_stream("stderr", "Error!");
-
-        // Use Helpers that create replies to the server to be returned
         // ( payload, user_expressions )
         return xeus::create_successful_reply(nl::json::array(), nl::json::object());
     }
