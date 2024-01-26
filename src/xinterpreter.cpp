@@ -28,29 +28,20 @@ namespace nl = nlohmann;
 
 namespace xeus_ruby
 {
-    void capture_output(const char* msg)
+    void capture_output(const std::string ruby_stdout)
     {
-        std::string tmp{ msg };
-        // nl::json pub_data;
-        // pub_data["text/plain"] = tmp;
-
         auto& interp = xeus::get_interpreter();
-        // int ex_counter{ dynamic_cast<interpreter&>(interp).get_counter() };
-        // interp.publish_execution_result(ex_counter, std::move(pub_data), nl::json::object());
-        interp.publish_stream("stdout", tmp);
-
+        interp.publish_stream("stdout", ruby_stdout);
     }
 
-
     interpreter::interpreter()
-        : m_execution_counter{ 0 }
     {
         xeus::register_interpreter(this);
         // Construct VM
         ruby_init();
 
         // For error messages??? Optional?
-        ruby_script("ruby_script");
+        // ruby_script("ruby_script");
 
         // To be able to load gems with require
         ruby_init_loadpath();
@@ -84,11 +75,6 @@ namespace xeus_ruby
 
     }
 
-    int interpreter::get_counter() const
-    {
-        return m_execution_counter;
-    }
-
     nl::json interpreter::execute_request_impl(
         int execution_counter, // Typically the cell number
         const std::string& code, // Code to execute
@@ -102,7 +88,6 @@ namespace xeus_ruby
         // this method takes the ``execution_counter`` as first argument,
         // the data to publish (mime type data) as second argument and metadata
         // as third argument.
-        m_execution_counter = execution_counter;
         nl::json pub_data{};
         std::vector<std::string> trace_back{};
 
