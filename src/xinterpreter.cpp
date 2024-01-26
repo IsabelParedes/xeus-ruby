@@ -13,10 +13,8 @@
 #include <sstream>
 
 #include <ruby.h>
-#undef snprintf
-#undef vsnprintf
-// #include <rice/rice.hpp>
-// #include <rice/stl.hpp>
+#include <rice/rice.hpp>
+#include <rice/stl.hpp>
 
 #include "nlohmann/json.hpp"
 
@@ -32,18 +30,14 @@ namespace xeus_ruby
 {
     void capture_output(const char* msg)
     {
-        // auto msg_string = rb_obj_as_string(ruby_message);
         std::string tmp{ msg };
-        nl::json pub_data;
-        pub_data["text/plain"] = tmp;
-        // std::cout << "Got output: " << StringValueCStr(msg_string) << '\n';
-        std::cout << "Getting there..." << tmp << '\n';
+        // nl::json pub_data;
+        // pub_data["text/plain"] = tmp;
 
         auto& interp = xeus::get_interpreter();
-        int ex_counter{ dynamic_cast<interpreter&>(interp).get_counter() };
-        interp.publish_execution_result(ex_counter, std::move(pub_data), nl::json::object());
-        std::cout << "After publishing result\n";
-        // publish_execution_result(0, std::move(pub_data), nl::json::object());
+        // int ex_counter{ dynamic_cast<interpreter&>(interp).get_counter() };
+        // interp.publish_execution_result(ex_counter, std::move(pub_data), nl::json::object());
+        interp.publish_stream("stdout", tmp);
 
     }
 
@@ -52,16 +46,10 @@ namespace xeus_ruby
         : m_execution_counter{ 0 }
     {
         xeus::register_interpreter(this);
-        // int argc{ 0 };
-        // char* argv{ nullptr };
-        // char** pArgv{ &argv };
-
-        // ruby_sysinit(&argc, &pArgv);
         // Construct VM
         ruby_init();
-        // ruby_init_loadpath();
 
-        // For error messages???
+        // For error messages??? Optional?
         ruby_script("ruby_script");
 
         // To be able to load gems with require
@@ -94,24 +82,6 @@ namespace xeus_ruby
             std::cout << "BAAD " << ex.what() << '\n';
         }
 
-        // Testing output capture
-        // std::string ruby_code =
-        //     "class CaptureOutput < IO"
-        //     "   def initialize"
-        //     "       super()"
-        //     "   end"
-        //     "end"
-        //     ""
-        //     "dout, serr, sout = $defout, $stderr, $stdout"
-        //     "buf = CaptureOutput.new"
-        //     "begin"
-        //     "   $defout = buf"
-        //     "   $stderr = buf"
-        //     "   $stdout = buf"
-        //     "   yield"
-        //     "ensure"
-        //     "   $defout, $stderr, $stdout = dout, serr, sout"
-        //     "end";
     }
 
     int interpreter::get_counter() const
@@ -136,41 +106,19 @@ namespace xeus_ruby
         nl::json pub_data{};
         std::vector<std::string> trace_back{};
 
-        // Redirect output stream
-        // std::streambuf* strCout = std::cout.rdbuf();
-        // std::ostringstream strCout;
-        // std::cout.rdbuf( strCout.rdbuf() );
-
-
-        // Rice::Module mod = Rice::define_module("XeusRubyModule");
-        // mod.module_eval(code.c_str());
-        // Rice::Object riceult = m_rice_module.module_eval(code.c_str());
-        // std::cout << "RICESULT " << rb_obj_as_string(riceult) << '\n';
-        // int state;
-        // char redirect_code[] =
-        //     "$stdout = StringIO.new"
-        //     "yield";
-        // rb_eval_string_protect(redirect_code, &state);
-        // if (state)
-        // {
-        //     std::cout << "SOMETHING BAD\n";
-        // }
-        // TODO: clean this up
-        // std::string wrapped_code = "require 'stringio'\n";
-        // wrapped_code.append("$stdout = StringIO.new\n");
-        // wrapped_code.append(code);
-        // wrapped_code.append("\n$stdout.string\n");
-
         try
         {
             Rice::Object r_result = Rice::detail::protect(rb_eval_string, code.c_str());
             // TODO: this only gets the last result, need to redirect output
-            auto r_string = rb_obj_as_string(r_result);
-
-            // Rice::Object string_output = Rice::detail::protect(rb_eval_string, "$stdout.string");
-            // auto string_output_stringy = rb_obj_as_string(string_output);
-
-            pub_data["text/plain"] = StringValueCStr(r_string);
+            if (r_result.value() == Qnil)
+            {
+                pub_data["text/plain"] = "nil";
+            }
+            else
+            {
+                auto r_string = rb_obj_as_string(r_result);
+                pub_data["text/plain"] = StringValueCStr(r_string);
+            }
         }
         catch (const Rice::Exception& ex)
         {
@@ -178,39 +126,8 @@ namespace xeus_ruby
             // TODO: get trace_back
             return xeus::create_error_reply(ex.what(), "Error", trace_back);
         }
-        // int state;
 
-        // VALUE ruby_result = rb_eval_string_protect(code.c_str(), &state);
-        // auto ruby_string = rb_obj_as_string(ruby_result);
-
-        // pub_data["text/plain"] = StringValueCStr(ruby_string);
-
-        // if (state)
-        // {
-        //     // Handle exceptions
-        //     publish_stream("stderr", "Something bad happened " + std::to_string(state));
-        //     return  xeus::create_error_reply("error value", "Error name", trace_back);
-        // }
-
-        // Restore stream redirect
-        // std::cout.rdbuf( oldCoutStreamBuf );
-
-        // switch (TYPE(ruby_result))
-        // {
-        //     case T_NIL:
-        //         pub_data["text/plain"] = "nil";
-        //         break;
-        //     case T_FIXNUM:
-        //         pub_data["text/plain"] = FIX2LONG(ruby_result);
-        //         break;
-        //     case T_STRING:
-        //         pub_data["text/plain"] = StringValueCStr(ruby_result);
-        //         break;
-        //     default:
-        //         pub_data["text/plain"] = "None of the above";
-        //         break;
-        // }
-        // Rice::Object exc = Rice::detail::protect(rb_eval_string, code.c_str());
+        publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
 
         // If silent is set to true, do not publish anything!
         // Otherwise:
