@@ -30,6 +30,18 @@ namespace nl = nlohmann;
 
 namespace xeus_ruby
 {
+    void capture_output(const char* msg)
+    {
+        // auto msg_string = rb_obj_as_string(ruby_message);
+        std::string tmp{ msg };
+        nl::json pub_data;
+        pub_data["text/plain"] = tmp;
+        // std::cout << "Got output: " << StringValueCStr(msg_string) << '\n';
+        std::cout << "Getting there..." << tmp << '\n';
+        // publish_execution_result(0, std::move(pub_data), nl::json::object());
+
+    }
+
 
     interpreter::interpreter()
     {
@@ -50,6 +62,31 @@ namespace xeus_ruby
         ruby_init_loadpath();
 
         m_rice_module = Rice::define_module("rice_module");
+
+        // Define the output capture in Ruby
+        Rice::Class rb_cOutputCapture =
+            Rice::define_class("CaptureClass")
+            .define_function("capture_output", &capture_output);
+
+        std::string ruby_code =
+            "$capture_fun = CaptureClass.new\n"
+            "class OutputCapture\n"
+            "   def write(text)\n"
+            "       $capture_fun.capture_output(text)\n"
+            "   end\n"
+            "end\n"
+            "\n"
+            "$stdout = OutputCapture.new\n"
+            "$stdout.write('You better work')\n";
+
+        try
+        {
+            Rice::detail::protect(rb_eval_string, ruby_code.c_str());
+        }
+        catch (const Rice::Exception& ex)
+        {
+            std::cout << "BAAD " << ex.what() << '\n';
+        }
 
         // Testing output capture
         // std::string ruby_code =
@@ -114,7 +151,7 @@ namespace xeus_ruby
 
         try
         {
-            Rice::Object r_result = Rice::detail::protect(rb_eval_string, wrapped_code.c_str());
+            Rice::Object r_result = Rice::detail::protect(rb_eval_string, code.c_str());
             // TODO: this only gets the last result, need to redirect output
             auto r_string = rb_obj_as_string(r_result);
 
