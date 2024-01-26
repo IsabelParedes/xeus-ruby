@@ -38,12 +38,18 @@ namespace xeus_ruby
         pub_data["text/plain"] = tmp;
         // std::cout << "Got output: " << StringValueCStr(msg_string) << '\n';
         std::cout << "Getting there..." << tmp << '\n';
+
+        auto& interp = xeus::get_interpreter();
+        int ex_counter{ dynamic_cast<interpreter&>(interp).get_counter() };
+        interp.publish_execution_result(ex_counter, std::move(pub_data), nl::json::object());
+        std::cout << "After publishing result\n";
         // publish_execution_result(0, std::move(pub_data), nl::json::object());
 
     }
 
 
     interpreter::interpreter()
+        : m_execution_counter{ 0 }
     {
         xeus::register_interpreter(this);
         // int argc{ 0 };
@@ -108,6 +114,11 @@ namespace xeus_ruby
         //     "end";
     }
 
+    int interpreter::get_counter() const
+    {
+        return m_execution_counter;
+    }
+
     nl::json interpreter::execute_request_impl(
         int execution_counter, // Typically the cell number
         const std::string& code, // Code to execute
@@ -121,6 +132,7 @@ namespace xeus_ruby
         // this method takes the ``execution_counter`` as first argument,
         // the data to publish (mime type data) as second argument and metadata
         // as third argument.
+        m_execution_counter = execution_counter;
         nl::json pub_data{};
         std::vector<std::string> trace_back{};
 
@@ -144,10 +156,10 @@ namespace xeus_ruby
         //     std::cout << "SOMETHING BAD\n";
         // }
         // TODO: clean this up
-        std::string wrapped_code = "require 'stringio'\n";
-        wrapped_code.append("$stdout = StringIO.new\n");
-        wrapped_code.append(code);
-        wrapped_code.append("\n$stdout.string\n");
+        // std::string wrapped_code = "require 'stringio'\n";
+        // wrapped_code.append("$stdout = StringIO.new\n");
+        // wrapped_code.append(code);
+        // wrapped_code.append("\n$stdout.string\n");
 
         try
         {
@@ -203,7 +215,7 @@ namespace xeus_ruby
         // If silent is set to true, do not publish anything!
         // Otherwise:
         // Publish the execution result
-        publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
+        // publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
 
         // You can also use this method for publishing errors to the client, if the code
         // failed to execute
