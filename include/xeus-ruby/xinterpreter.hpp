@@ -40,7 +40,6 @@ namespace xeus_ruby
 
         interpreter();
         virtual ~interpreter() = default;
-        int get_counter() const;
 
     protected:
 
@@ -67,7 +66,6 @@ namespace xeus_ruby
 
     private:
         Rice::Module m_rice_module{};
-        int m_execution_counter{};
 
     };
 }
