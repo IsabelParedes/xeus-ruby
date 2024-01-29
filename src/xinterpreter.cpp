@@ -57,12 +57,7 @@ namespace xeus_ruby
         try
         {
             Rice::Object r_result = Rice::detail::protect(rb_eval_string, code.c_str());
-            if (r_result.value() == Qnil)
-            {
-                pub_data["text/plain"] = "niloooo";
-                std::cout << "Got nit\n";
-            }
-            else
+            if (!NIL_P(r_result.value()))
             {
                 auto r_string = rb_obj_as_string(r_result);
                 pub_data["text/plain"] = StringValueCStr(r_string);
