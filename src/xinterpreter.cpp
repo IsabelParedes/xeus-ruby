@@ -23,16 +23,12 @@
 #include "xeus/xhelper.hpp"
 
 #include "xeus-ruby/xinterpreter.hpp"
+#include "xeus-ruby/xutils.hpp"
 
 namespace nl = nlohmann;
 
 namespace xeus_ruby
 {
-    void capture_output(const std::string ruby_stdout)
-    {
-        auto& interp = xeus::get_interpreter();
-        interp.publish_stream("stdout", ruby_stdout);
-    }
 
     interpreter::interpreter()
     {
@@ -42,31 +38,6 @@ namespace xeus_ruby
 
         // To be able to load gems with require
         ruby_init_loadpath();
-
-        // Define the output capture in Ruby
-        Rice::Class rb_cOutputCapture =
-            Rice::define_class("CaptureClass")
-            .define_function("capture_output", &capture_output);
-
-        std::string ruby_code =
-            "$capture_fun = CaptureClass.new\n"
-            "class OutputCapture\n"
-            "   def write(text)\n"
-            "       $capture_fun.capture_output(text)\n"
-            "   end\n"
-            "end\n"
-            "\n"
-            "$stdout = OutputCapture.new\n"
-            "$stdout.write('You better work')\n";
-
-        try
-        {
-            Rice::detail::protect(rb_eval_string, ruby_code.c_str());
-        }
-        catch (const Rice::Exception& ex)
-        {
-            std::cout << "BAAD " << ex.what() << '\n';
-        }
 
     }
 
@@ -88,7 +59,8 @@ namespace xeus_ruby
             Rice::Object r_result = Rice::detail::protect(rb_eval_string, code.c_str());
             if (r_result.value() == Qnil)
             {
-                pub_data["text/plain"] = "nil";
+                pub_data["text/plain"] = "niloooo";
+                std::cout << "Got nit\n";
             }
             else
             {
@@ -113,10 +85,26 @@ namespace xeus_ruby
 
     void interpreter::configure_impl()
     {
-        // `configure_impl` allows you to perform some operations
-        // after the custom_interpreter creation and before executing any request.
-        // This is optional, but can be useful;
-        // you can for example initialize an engine here or redirect output.
+        // Runs after the custom_interpreter creation and before the execution
+        // of  any request.
+        // stdout from Ruby is redirected to be printed on the notebook
+        // stderr is NOT redirected because this is handled with Rice exceptions
+
+        // Define the output capture in Ruby
+        Rice::Class rb_cOutputCapture =
+            Rice::define_class("CaptureClass")
+            .define_function("capture_stdout", &capture_stdout);
+
+        std::string ruby_code =
+            "$capture_obj = CaptureClass.new\n"
+            "class StdoutCapture\n"
+            "   def write(text)\n"
+            "       $capture_obj.capture_stdout(text)\n"
+            "   end\n"
+            "end\n"
+            "$stdout = StdoutCapture.new\n";
+
+        Rice::detail::protect(rb_eval_string, ruby_code.c_str());
     }
 
     nl::json interpreter::is_complete_request_impl(const std::string& code)
