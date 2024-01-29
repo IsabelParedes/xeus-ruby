@@ -113,10 +113,12 @@ endif()
 set(XEUS_RUBY_HEADERS
     include/xeus-ruby/xeus_ruby_config.hpp
     include/xeus-ruby/xinterpreter.hpp
+    include/xeus-ruby/xutils.hpp
 )
 
 set(XEUS_RUBY_SRC
     src/xinterpreter.cpp
+    src/xutils.cpp
 )
 
 set(XEUS_RUBY_MAIN_SRC
