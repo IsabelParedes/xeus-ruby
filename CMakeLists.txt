@@ -91,7 +91,7 @@ endif ()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Intel")
     if(NOT EMSCRIPTEN)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused-parameter -Wextra -Wreorder")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused-parameter -Wextra -Wreorder -Wno-reserved-user-defined-literal")
     endif()
 
     CHECK_CXX_COMPILER_FLAG("-std=c++17" HAS_CPP_17_FLAG)
@@ -144,7 +144,7 @@ macro(xeus_ruby_set_common_options target_name)
         CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR
         CMAKE_CXX_COMPILER_ID MATCHES "Intel")
 
-        target_compile_options(${target_name} PUBLIC -Wunused-parameter -Wextra -Wreorder)
+        target_compile_options(${target_name} PUBLIC -Wunused-parameter -Wextra -Wreorder -Wno-reserved-user-defined-literal)
 
         # C++17 flag
         CHECK_CXX_COMPILER_FLAG("-std=c++17" HAS_CPP_17_FLAG)
