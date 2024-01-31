@@ -67,7 +67,7 @@ endif()
 set(xtl_REQUIRED_VERSION 0.7.0)
 set(xeus_REQUIRED_VERSION 3.0.5)
 set(Ruby_REQUIRED_VERSION 3.0)
-set(rice_REQUIRED_VERSION 4.0)
+# set(rice_REQUIRED_VERSION 4.0)
 
 if (NOT TARGET xtl)
     find_package(xtl ${xtl_REQUIRED_VERSION} REQUIRED)
@@ -77,7 +77,7 @@ if (NOT TARGET xeus AND NOT TARGET xeus-static)
 endif ()
 
 find_package(Ruby ${Ruby_REQUIRED_VERSION} REQUIRED)
-find_package(Rice ${rice_REQUIRED_VERSION} REQUIRED)
+# find_package(Rice ${rice_REQUIRED_VERSION} REQUIRED)
 
 # Flags
 # =====
@@ -102,7 +102,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU"
     endif ()
 
     if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        # TODO: these errors come from importing ruby.h
+        # TODO: fix build with clang, errors coming from nlohmann/json
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-reserved-user-defined-literal -Wno-register")
     endif ()
 endif ()

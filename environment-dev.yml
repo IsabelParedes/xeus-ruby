@@ -13,7 +13,6 @@ dependencies:
   - xtl
   - jupyterlab
   - ruby >=3.2
-  - rice
   # Test dependencies
   - pytest
   - jupyter_kernel_test

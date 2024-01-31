@@ -23,6 +23,10 @@
 // #undef vsnprintf
 #include <rice/rice.hpp>
 
+#ifdef __clang___
+    #undef finite
+    #include <cmath>
+#endif
 #include "nlohmann/json.hpp"
 
 #include "xeus_ruby_config.hpp"
