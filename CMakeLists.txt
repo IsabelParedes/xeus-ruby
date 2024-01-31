@@ -95,7 +95,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU"
     endif ()
 
     if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-reserved-user-defined-literal")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-reserved-user-defined-literal -Wno-register")
     endif ()
 
     CHECK_CXX_COMPILER_FLAG("-std=c++17" HAS_CPP_17_FLAG)
@@ -148,11 +148,7 @@ macro(xeus_ruby_set_common_options target_name)
         CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR
         CMAKE_CXX_COMPILER_ID MATCHES "Intel")
 
-        if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-            target_compile_options(${target_name} PUBLIC -Wunused-parameter -Wextra -Wreorder)
-        else ()
-            target_compile_options(${target_name} PUBLIC -Wunused-parameter -Wextra -Wreorder -Wno-reserved-user-defined-literal)
-        endif ()
+        target_compile_options(${target_name} PUBLIC -Wunused-parameter -Wextra -Wreorder)
 
         # C++17 flag
         CHECK_CXX_COMPILER_FLAG("-std=c++17" HAS_CPP_17_FLAG)
