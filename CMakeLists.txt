@@ -94,16 +94,16 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU"
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused-parameter -Wextra -Wreorder")
     endif ()
 
-    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        # TODO: these errors come from importing ruby.h
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-reserved-user-defined-literal -Wno-register -Werror=undeclared-identifier")
-    endif ()
-
     CHECK_CXX_COMPILER_FLAG("-std=c++17" HAS_CPP_17_FLAG)
     if (HAS_CPP_17_FLAG)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
     else ()
         message(FATAL_ERROR "Unsupported compiler -- xeus requires C++17 support!")
+    endif ()
+
+    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        # TODO: these errors come from importing ruby.h
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-reserved-user-defined-literal -Wno-register -Werror=undeclared-identifier")
     endif ()
 endif ()
 
