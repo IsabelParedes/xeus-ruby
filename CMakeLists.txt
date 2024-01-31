@@ -103,7 +103,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU"
 
     if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         # TODO: these errors come from importing ruby.h
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-reserved-user-defined-literal -Wno-register -Wno-error=undeclared-identifier")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-reserved-user-defined-literal -Wno-register")
     endif ()
 endif ()
 

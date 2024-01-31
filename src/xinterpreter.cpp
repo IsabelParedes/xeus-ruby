@@ -14,7 +14,6 @@
 
 #include <ruby.h>
 #include <rice/rice.hpp>
-#include <rice/stl.hpp>
 
 #include "nlohmann/json.hpp"
 
