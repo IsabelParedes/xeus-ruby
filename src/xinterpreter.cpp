@@ -102,21 +102,22 @@ namespace xeus_ruby
         Rice::detail::protect(rb_eval_string, ruby_code.c_str());
     }
 
-    nl::json interpreter::is_complete_request_impl(const std::string& code)
+    nl::json interpreter::is_complete_request_impl(const std::string& /*code*/)
     {
-        // Insert code here to validate the ``code``
+        // TODO: Insert code here to validate the ``code``
         // and use `create_is_complete_reply` with the corresponding status
         // "unknown", "incomplete", "invalid", "complete"
         return xeus::create_is_complete_reply("complete"/*status*/, "   "/*indent*/);
     }
 
-    nl::json interpreter::complete_request_impl(const std::string& code,
-                                                     int cursor_pos)
+    nl::json interpreter::complete_request_impl(
+        const std::string& /*code*/, int cursor_pos)
     {
-        // Should be replaced with code performing the completion
+        // TODO: Should be replaced with code performing the completion
         // and use the returned `matches` to `create_complete_reply`
         // i.e if the code starts with 'H', it could be the following completion
-        if (code[0] == 'H')
+        // if (code[0] == 'H')
+        if (false)
         {
 
             return xeus::create_complete_reply(
@@ -146,22 +147,16 @@ namespace xeus_ruby
                                                       int /*cursor_pos*/,
                                                       int /*detail_level*/)
     {
-
+        // TODO:
         return xeus::create_inspect_reply(true/*found*/,
-            {{std::string("text/plain"), std::string("hello!")}}, /*data*/
-            {{std::string("text/plain"), std::string("hello!")}}  /*meta-data*/
+            {{std::string("text/plain"), std::string("data")}}, /*data*/
+            {{std::string("text/plain"), std::string("meta-data")}}  /*meta-data*/
         );
 
     }
 
     void interpreter::shutdown_request_impl() {
-        // ruby_finalize();
-        std::cout << "Bye!!" << std::endl;
-        VALUE val = ruby_cleanup(0);
-        if (val)
-        {
-            // Handle exceptions here
-        }
+        ruby_finalize();
     }
 
     nl::json interpreter::kernel_info_request_impl()
