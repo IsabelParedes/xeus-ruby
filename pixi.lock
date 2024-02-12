@@ -657,6 +657,11 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/yaml-0.2.5-h3422bc3_2.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zeromq-4.3.5-h965bd2d_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.5-h4f39d0f_0.conda
+  wasm-host:
+    channels:
+    - url: https://repo.mamba.pm/emscripten-forge/
+    - url: https://conda.anaconda.org/conda-forge/
+    packages: {}
 packages:
 - kind: conda
   name: _libgcc_mutex
