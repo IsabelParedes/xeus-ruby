@@ -48,3 +48,6 @@ docs/_build
 tst*
 .vscode
 archive
+# pixi environments
+.pixi
+
