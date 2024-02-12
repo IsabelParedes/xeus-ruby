@@ -1,0 +1,42 @@
+[project]
+name = "xeus-ruby"
+version = "0.1.0"
+description = "Add a short description here"
+authors = ["... <email@mail.com"]
+channels = ["conda-forge"]
+platforms = ["osx-arm64", "linux-64"]
+
+[tasks]
+
+[dependencies]
+# xeus-ruby = "0.1.0"
+ipywidgets = ">=8.0"
+jupyterlab = "*"
+
+[feature.dev.dependencies]
+ninja = "*"
+cmake = "*"
+cxx-compiler = "*"
+# Host dependencies
+xeus-zmq = ">=1.0.2,<2.0"
+nlohmann_json = "*"
+cppzmq = "*"
+xtl = "*"
+ruby = ">=3.2"
+rice = "*"
+# Test dependencies
+pytest = "*"
+jupyter_kernel_test = "*"
+nbval = "*"
+pytest-rerunfailures = "*"
+
+[feature.dev.tasks]
+build = """
+    mkdir -p build;
+    cd build;
+    cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_PREFIX_PATH=$CONDA_PREFIX -GNinja;
+    ninja
+"""
+
+[environments]
+dev = ["dev"]
