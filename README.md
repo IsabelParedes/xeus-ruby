@@ -54,6 +54,12 @@ cmake .. \
 make && make install
 ```
 
+Or skip all of the above and install it with [pixi](https://github.com/prefix-dev/pixi).
+
+```sh
+pixi run -e dev start
+```
+
 <!-- ## Trying it online
 
 To try out xeus-ruby interactively in your web browser, just click on the binder link:
