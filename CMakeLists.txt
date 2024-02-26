@@ -76,7 +76,9 @@ if (NOT TARGET xeus AND NOT TARGET xeus-static)
     find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
 endif ()
 
-find_package(Ruby ${Ruby_REQUIRED_VERSION} REQUIRED)
+set(CMAKE_FIND_DEBUG_MODE TRUE)
+
+find_package(Ruby ${Ruby_REQUIRED_VERSION} REQUIRED PATH $ENV{CMAKE_PREFIX_PATH})
 find_package(Rice ${rice_REQUIRED_VERSION} REQUIRED)
 
 # Flags
