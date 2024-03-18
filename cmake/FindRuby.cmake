@@ -7,12 +7,19 @@
 #############################################################################
 
 if (EMSCRIPTEN)
-    set(Ruby_INCLUDE_DIRS $ENV{CMAKE_PREFIX_PATH}/include/ruby.h)
-    set(Ruby_INCLUDE_DIR $ENV{CMAKE_PREFIX_PATH}/include/ruby.h)
-    set(Ruby_LIBRARIES $ENV{CMAKE_PREFIX_PATH}/lib/libruby-static.a)
-    set(Ruby_LIBRARY $ENV{CMAKE_PREFIX_PATH}/lib/libruby-static.a)
+    # set(Ruby_INCLUDE_DIRS $ENV{CMAKE_PREFIX_PATH}/include/ruby.h)
+    # set(Ruby_INCLUDE_DIR $ENV{CMAKE_PREFIX_PATH}/include/ruby.h)
+    # set(Ruby_LIBRARIES $ENV{CMAKE_PREFIX_PATH}/lib/libruby-static.a)
+    # set(Ruby_LIBRARY $ENV{CMAKE_PREFIX_PATH}/lib/libruby-static.a)
 
-    find_path(Ruby_INCLUDE_DIR NAMES ruby.h)
+    message("PAAAA $ENV{PREFIX}")
+
+    find_path(
+        Ruby_INCLUDE_DIR NAMES ruby.h
+        HINTS $ENV{PREFIX}
+        PATHS $ENV{PREFIX}
+        PATH_SUFFIXES include ruby-3.2.0 ruby-3.2 ruby
+    )
 
     find_library(Ruby_LIBRARY NAMES ruby)
 
