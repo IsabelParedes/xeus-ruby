@@ -12,6 +12,11 @@
 #include <streambuf>
 #include <sstream>
 
+#ifdef __clang__
+    #define STRINGIZE(n) STRINGIZE_DIRECT(n)
+    #define STRINGIZE_DIRECT(n) #n
+#endif
+
 #include <ruby.h>
 #include <rice/rice.hpp>
 #include <rice/stl.hpp>

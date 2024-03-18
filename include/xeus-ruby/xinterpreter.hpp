@@ -18,6 +18,11 @@
 #include <string>
 #include <memory>
 
+#ifdef __clang__
+    #define STRINGIZE(n) STRINGIZE_DIRECT(n)
+    #define STRINGIZE_DIRECT(n) #n
+#endif
+
 #include <ruby.h>
 // #undef snprintf
 // #undef vsnprintf
