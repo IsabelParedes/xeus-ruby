@@ -108,7 +108,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        emsdk_ver: ["3.1.46"]
+        emsdk_ver: ["3.1.45"]
 
     steps:
       - uses: actions/checkout@v4
@@ -120,10 +120,7 @@ jobs:
         uses: mamba-org/setup-micromamba@v1
         with:
           environment-name: xeus-ruby-wasm-build
-          create-args: >-
-            cmake
-            emsdk==${{ matrix.emsdk_ver }}
-            empack
+          environment-file: environment-wasm-build.yml
 
       - name: Setup emsdk
         shell: bash -l {0}
@@ -133,8 +130,8 @@ jobs:
         shell: bash -l {0}
         run: |
           emsdk activate ${{ matrix.emsdk_ver }}
-
           source $CONDA_EMSDK_DIR/emsdk_env.sh
+
           micromamba create -f environment-wasm-host.yml --platform=emscripten-wasm32
 
           mkdir build
