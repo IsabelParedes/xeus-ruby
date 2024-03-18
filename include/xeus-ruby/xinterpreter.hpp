@@ -18,12 +18,14 @@
 #include <string>
 #include <memory>
 
-#include <ruby.h>
 // #undef snprintf
 // #undef vsnprintf
 #include <rice/rice.hpp>
 #include <rice/stl.hpp>
 
+#ifdef isfinite
+#undef isfinite
+#endif
 #include "nlohmann/json.hpp"
 
 #include "xeus_ruby_config.hpp"

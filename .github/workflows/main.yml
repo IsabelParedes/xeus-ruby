@@ -18,13 +18,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-13]
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Get number of CPU cores
-        uses: SimenB/github-actions-cpu-cores@v2
 
       - name: Make build directory
         run: mkdir build
@@ -44,7 +41,7 @@ jobs:
 
       - name: Build
         shell: bash -l {0}
-        run: make -j${{ steps.cpu-cores.outputs.count }}
+        run: make -j4
         working-directory: build
 
       - name: Install
@@ -113,9 +110,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Get number of CPU cores
-        uses: SimenB/github-actions-cpu-cores@v2
-
       - name: Install micromamba
         uses: mamba-org/setup-micromamba@v1
         with:
@@ -151,4 +145,4 @@ jobs:
             -DCMAKE_INSTALL_PREFIX=$PREFIX                    \
             -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ON            \
             ..
-          make -j${{ steps.cpu-cores.outputs.count }}
+          make -j4
