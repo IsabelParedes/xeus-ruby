@@ -12,9 +12,9 @@
 #include <streambuf>
 #include <sstream>
 
+#include <ruby.h>
 #include <rice/rice.hpp>
 #include <rice/stl.hpp>
-#include <ruby.h>
 
 #ifdef isfinite
 #undef isfinite
