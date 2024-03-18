@@ -22,7 +22,6 @@
 // #undef vsnprintf
 #include <rice/rice.hpp>
 #include <rice/stl.hpp>
-#include <ruby.h>
 
 #ifdef isfinite
 #undef isfinite
