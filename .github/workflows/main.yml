@@ -44,7 +44,7 @@ jobs:
 
       - name: Build
         shell: bash -l {0}
-        run: make -j${{ steps.cpu-cores.outputs.count }}
+        run: make -j ${{ steps.cpu-cores.outputs.count }}
         working-directory: build
 
       - name: Install
